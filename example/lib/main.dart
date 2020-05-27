@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'PickerData.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'province.dart';
 
 void main() => runApp(new MyApp());
 
@@ -46,6 +47,44 @@ class _MyHomePageState extends State<MyHomePage> {
   final double listSpec = 4.0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String stateText;
+
+  List<dynamic> _parseDistrictData(){
+
+    var resultData = List<dynamic>();
+    List<dynamic> originList = JsonDecoder().convert(provinceData);
+    // 省列表
+    List<String> provinceList = <String>[];
+    originList.forEach((element) {
+      String province = element['label'];
+      provinceList.add(province);
+    });
+    provinceList.forEach((proElem) {//省
+      var provinceInfo = Map<String,dynamic>();
+      originList.forEach((oriElem) {
+
+        if(proElem.compareTo(oriElem['label'])==0){
+          // 城市json列表
+          List<dynamic> oriCityList = oriElem['children'];
+          var cityList = List<dynamic>();
+          var cityInfo = Map<String,List<String>>();
+          if(oriCityList != null){
+            oriCityList.forEach((oriCityElem) {
+              String city = oriCityElem['label']; //市
+              List<dynamic> oriDistrictList = oriCityElem['children'];
+
+              List<String> districtList = List<String>.generate(oriDistrictList.length, (index) => oriDistrictList[index]['label']); //区
+              cityInfo[city] = districtList;
+              cityList.add(cityInfo);
+            });
+          }
+
+          provinceInfo[proElem] = cityList;
+          resultData.add(provinceInfo);
+        }
+      });
+    });
+    return resultData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +208,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   showPickerModal(BuildContext context) {
     Picker(
-      adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)),
+      adapter: PickerDataAdapter<String>(pickerdata: _parseDistrictData()//JsonDecoder().convert(PickerData)
+
+      ),
       changeToFirst: true,
       hideHeader: false,
       selectedTextStyle: TextStyle(color: Colors.blue),
