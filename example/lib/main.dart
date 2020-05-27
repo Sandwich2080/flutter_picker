@@ -114,6 +114,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 showPickerModal(context);
               },
             ),
+
+            SizedBox(height: listSpec),
+            RaisedButton(
+              child: Text('Picker Area Selection'),
+              onPressed: () {
+                showPickerModal2(context);
+              },
+            ),
+
             SizedBox(height: listSpec),
             RaisedButton(
               child: Text('Picker Show Icons'),
@@ -208,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   showPickerModal(BuildContext context) {
     Picker(
-      adapter: PickerDataAdapter<String>(pickerdata: _parseDistrictData()//JsonDecoder().convert(PickerData)
+      adapter: PickerDataAdapter<String>(pickerdata: JsonDecoder().convert(PickerData)
       ),
       changeToFirst: true,
       hideHeader: false,
@@ -217,6 +226,20 @@ class _MyHomePageState extends State<MyHomePage> {
         print(value.toString());
         print(picker.adapter.text);
       }
+    ).showModal(this.context); //_scaffoldKey.currentState);
+  }
+
+  showPickerModal2(BuildContext context) {
+    Picker(
+        adapter: PickerDataAdapter<String>(pickerdata: _parseDistrictData()//JsonDecoder().convert(PickerData)
+        ),
+        changeToFirst: true,
+        hideHeader: false,
+        selectedTextStyle: TextStyle(color: Colors.blue),
+        onConfirm: (Picker picker, List value) {
+          print(value.toString());
+          print(picker.adapter.text);
+        }
     ).showModal(this.context); //_scaffoldKey.currentState);
   }
 
