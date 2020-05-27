@@ -209,7 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
   showPickerModal(BuildContext context) {
     Picker(
       adapter: PickerDataAdapter<String>(pickerdata: _parseDistrictData()//JsonDecoder().convert(PickerData)
-
       ),
       changeToFirst: true,
       hideHeader: false,
